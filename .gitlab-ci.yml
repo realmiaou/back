@@ -1,0 +1,16 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
+stages:
+  - release
+
+publish:
+  image: node:latest
+  stage: release
+  script:
+    - yarn install
+    - yarn build
+    - yarn semantic-release
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
