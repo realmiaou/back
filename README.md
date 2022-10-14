@@ -9,6 +9,37 @@ yarn add --exact @miaou/back
 ```
 
 ## Documentation
+
+### Firestore
+#### Fireway
+
+```typescript
+// v001-orders.migration.ts
+
+export async function migrate() {
+  const batch = new BigBatch({ firestore: database })
+  const db = database.collection('order')
+
+  Object.values(inventory).forEach((inventoryProduct) => {
+    const ref = db.doc(inventoryProduct.id)
+    batch.set(ref, {
+      id: inventoryProduct.id,
+      productId: inventoryProduct.productId,
+      quantity: inventoryProduct.quantity,
+    })
+  })
+
+  await batch.commit()
+}
+```
+
+```typescript
+import { region } from 'firebase-functions'
+import { getFirestore } from 'firebase-admin/firestore'
+
+export const migration = migrateFirestore(region('europe-west1').https, getFirestore())
+```
+
 ### Functions
 #### Middleware
 
