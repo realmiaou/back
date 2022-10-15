@@ -46,7 +46,7 @@ export const migrate = async () => {
 ```typescript
 import {region} from 'firebase-functions'
 import {getFirestore} from 'firebase-admin/firestore'
-
+// Do not forget to call your function export * as system from './infra/spi/migration' in your index.ts
 export const migrate = migrateFirestore(
     region('europe-west1'),
     getFirestore(), { migrationFolderPath: __dirname })

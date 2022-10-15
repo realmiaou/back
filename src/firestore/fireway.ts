@@ -6,7 +6,7 @@ import fg from 'fast-glob'
 export type MigrationConfiguration = {
   migrationFolderPath?: string
 }
-export type MigrationScript = {
+type MigrationScript = {
     migrate: () => Promise<void>
     version: number
 }
