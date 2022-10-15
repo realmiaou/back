@@ -14,7 +14,7 @@ export type MigrationScript = {
 export const migrateFirestore = (https: FunctionBuilder, database: Firestore, { migrationFolderPath = process.cwd() }: MigrationConfiguration) =>
   https.runWith({ timeoutSeconds: 540 })
     .https.onRequest(async (_, resp) => {
-      const files = await fg([path.join(migrationFolderPath, '**/*.migration.ts')], { dot: true })
+      const files = await fg([path.join(migrationFolderPath, '**/*.migration.js')], { dot: true })
       const instances: MigrationScript[] = await Promise.all(files.map(async file => ({
         version: parseInt(path.basename(file).match(/(?<=v)(.*?)(?=-)/)![0]),
         migrate: (await import(file)).migrate
@@ -36,7 +36,7 @@ const migrate = (database: Firestore) => async (migrationScripts: MigrationScrip
   stats.scannedFiles = migrationScripts.length
   console.log(`Found ${stats.scannedFiles} migration files`)
 
-  const collection = database.collection('fireway/migration')
+  const collection = database.collection('fireway')
   const lastMigration =
         (await collection.orderBy('version', 'desc').get()).docs[0]?.data() ?? null
 

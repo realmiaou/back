@@ -11,36 +11,53 @@ yarn add --exact @miaou/back
 ## Documentation
 
 ### Firestore
+
 #### Fireway
+
+You must name your file with the following pattern `v{version_number}-{file_name}.migration.ts`.
+- `v001-orders-validated.migration.ts`
+- `v002-deleted-commands.migration.ts`
+- `v003-users.migration.ts`
+
 
 ```typescript
 // v001-orders.migration.ts
+import {BigBatch} from '@qualdesk/firestore-big-batch'
 
-export async function migrate() {
-  const batch = new BigBatch({ firestore: database })
-  const db = database.collection('order')
+const database = getFirestore()
 
-  Object.values(inventory).forEach((inventoryProduct) => {
-    const ref = db.doc(inventoryProduct.id)
-    batch.set(ref, {
-      id: inventoryProduct.id,
-      productId: inventoryProduct.productId,
-      quantity: inventoryProduct.quantity,
+export const migrate = async () => {
+    const batch = new BigBatch({firestore: database})
+    const db = database.collection('order')
+
+    Object.values(inventory).forEach((inventoryProduct) => {
+        const ref = db.doc(inventoryProduct.id)
+        batch.set(ref, {
+            id: inventoryProduct.id,
+            productId: inventoryProduct.productId,
+            quantity: inventoryProduct.quantity,
+        })
     })
-  })
 
-  await batch.commit()
+    await batch.commit()
 }
 ```
 
 ```typescript
-import { region } from 'firebase-functions'
-import { getFirestore } from 'firebase-admin/firestore'
+import {region} from 'firebase-functions'
+import {getFirestore} from 'firebase-admin/firestore'
 
-export const migration = migrateFirestore(region('europe-west1').https, getFirestore())
+export const migrate = migrateFirestore(
+    region('europe-west1'),
+    getFirestore(), { migrationFolderPath: __dirname })
 ```
 
+#### Best practices
+
+Do not import functions or types from other package/folder (expect firebase packages). Your migration code should be isolated.
+
 ### Functions
+
 #### Middleware
 
 ```typescript
@@ -86,7 +103,7 @@ export const lastNews = authenticatedOnCall<LastNewsQuery>()((locale) =>
 #### Testing
 
 ```typescript
-import { firestoreTest, testableHttp } from '@miaou/back'
+import {firestoreTest, testableHttp} from '@miaou/back'
 import 'chai/register-should.js'
 
 // my-test.int.test.ts
@@ -95,10 +112,10 @@ describe('My test ', () => {
         // Given
         const db = firestoreTest()
         const isOrderPending = testableHttp<OrderCommand>('app-is-order-pending', 'tibo')
-        await saveOrder(db)<Order>({ userId: 'tibo' as UserId })
+        await saveOrder(db)<Order>({userId: 'tibo' as UserId})
 
         // When
-        const { data } = await orderCommand('XXXX-XXXX' as OrderId)
+        const {data} = await orderCommand('XXXX-XXXX' as OrderId)
 
         // Then
         data.should.be.false
@@ -107,6 +124,7 @@ describe('My test ', () => {
 ```
 
 ### Triggers
+
 #### Middleware
 
 ```typescript
@@ -138,31 +156,31 @@ export const onCreate = typedOnCreateTriggerWithMiddlewares([
 
 ```typescript
 export const onOrderWrite = onWrite<Order>(
-  'orders/{oderId}',
-  async (orderChange) => {
-    const beforeOrder = orderChange.before.data()
-    const afterOrder = orderChange.after.data()
+    'orders/{oderId}',
+    async (orderChange) => {
+        const beforeOrder = orderChange.before.data()
+        const afterOrder = orderChange.after.data()
 
-    // Delete
-    if (!afterOrder && beforeOrder) {
-      await deleteOrderView(database)(beforeOrder.id)
-      return
-    }
+        // Delete
+        if (!afterOrder && beforeOrder) {
+            await deleteOrderView(database)(beforeOrder.id)
+            return
+        }
 
-    // Create and Update
-    if (afterOrder) {
-      const order = await getOrder(afterOrder.id)
-      const user = await getUser(afterOrder.userId)
-      const licence = await getLicence(order.licenceId)
-      const transaction = await getTransaction(order.transactionId)
-      await saveOrderView(database)({
-        ...order,
-        user,
-        licence,
-        transaction,
-      })
+        // Create and Update
+        if (afterOrder) {
+            const order = await getOrder(afterOrder.id)
+            const user = await getUser(afterOrder.userId)
+            const licence = await getLicence(order.licenceId)
+            const transaction = await getTransaction(order.transactionId)
+            await saveOrderView(database)({
+                ...order,
+                user,
+                licence,
+                transaction,
+            })
+        }
     }
-  }
 )
 
 
