@@ -12,6 +12,64 @@ yarn add --exact @miaou/back
 
 ### Firestore
 
+#### Backup for firestore
+
+#### Requirements
+
+- [gcloud](https://cloud.google.com/sdk/docs/install)
+- [gsutil](https://cloud.google.com/storage/docs/gsutil_install)
+
+You must set the right for the default app engine service account.
+
+```bash
+gcloud auth login
+```
+
+```bash
+gcloud config set project PROJECT_ID
+```
+
+```bash
+gcloud projects add-iam-policy-binding PROJECT_ID \
+    --member serviceAccount:PROJECT_ID@appspot.gserviceaccount.com \
+    --role roles/datastore.importExportAdmin
+```
+
+```bash
+gsutil iam ch serviceAccount:PROJECT_ID@appspot.gserviceaccount.com:admin \
+    gs://PROJECT_ID.appspot.com
+```
+
+
+#### Usage for backup
+
+You could configure your backup as you want.
+You can set folderName and expiration time with your preferences
+
+
+```typescript
+// index.ts
+import { getStorage } from 'firebase-admin/storage'
+import { backup } from '@miaou/back/lib/firestore'
+
+const app = initializeApp()
+const storage = getStorage(app)
+
+export const myBackup = backup(
+  pubsub.schedule('every 24 hours').timeZone('Europe/Paris'),
+  storage.bucket()
+)({ folderName: 'backup', expirationIn: 2 })
+```
+
+#### Usage for restore
+
+This example is for restore backup when folder name is `backup`.
+If you have another folder name you can replace it with yours
+
+```bash
+gcloud firestore import gs://PROJECT_ID.appspot.com/backup/YYYY-MM-DD
+```
+
 #### Fireway
 
 You must name your file with the following pattern `v{version_number}-{file_name}.migration.ts`.
