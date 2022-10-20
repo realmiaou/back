@@ -1,8 +1,10 @@
 import flattenDeep from 'lodash.flattendeep'
-import { Client, Hub } from '@sentry/types'
+import Sentry from '@sentry/node'
 import { Middleware } from './index.type'
 
-export const sentry = (sentry: Hub & Client) : Middleware<any> => async (data, context, next) => {
+export type SentryInstance = typeof Sentry
+
+export const sentry = (sentry: SentryInstance) : Middleware<any> => async (data, context, next) => {
   const userId = context.auth?.uid ?? 'guest'
   sentry.setUser({ id: userId })
   const transaction = sentry.startTransaction({
