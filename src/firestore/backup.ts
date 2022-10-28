@@ -27,7 +27,7 @@ export const backup = (pubsub: BackupScheduler, bucket: BackupBucket) =>
   ({ folderName = 'backup', expirationIn = 7 }: BackupMigration = {}) => pubsub
     .onRun(async () => {
       const date = new Date()
-      const bucketPath = `gs://${bucket.name}/${folderName}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDay()}`
+      const bucketPath = `gs://${bucket.name}/${folderName}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getUTCDate()}`
       const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT
       await removeOldBackups(bucket)(folderName, expirationIn)
       const databaseName = client.databasePath(projectId!, '(default)')
