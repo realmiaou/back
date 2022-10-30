@@ -25,7 +25,7 @@ export type BackupBucket = {
 }
 
 export const backup = (pubsub: BackupScheduler, bucket: BackupBucket, { folderName = 'backup', expirationIn = 7, dryRun = false }: BackupMigration = {}) =>
-  () => pubsub
+  pubsub
     .onRun(async () => {
       if (dryRun) return
       const date = new Date()
