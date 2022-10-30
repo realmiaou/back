@@ -46,19 +46,20 @@ gsutil iam ch serviceAccount:PROJECT_ID@appspot.gserviceaccount.com:admin \
 You could configure your backup as you want.
 You can set folderName and expiration time with your preferences
 
-
 ```typescript
 // index.ts
-import { getStorage } from 'firebase-admin/storage'
-import { backup } from '@miaou/back/lib/firestore'
+import {getStorage} from 'firebase-admin/storage'
+import {backup} from '@miaou/back/lib/firestore'
+import {Day} from "@miaou/types";
 
 const app = initializeApp()
 const storage = getStorage(app)
 
 export const myBackup = backup(
-  pubsub.schedule('every 24 hours').timeZone('Europe/Paris'),
-  storage.bucket()
-)({ folderName: 'backup', expirationIn: 2 })
+    pubsub.schedule('every 24 hours').timeZone('Europe/Paris'),
+    storage.bucket(),
+    {folderName: 'backup', expirationIn: 2 as Day, dryRun: process.env.ENVIRONMENT !== 'production'})
+```
 ```
 
 #### Usage for restore
