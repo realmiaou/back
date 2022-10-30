@@ -4,8 +4,9 @@ import { Day } from '@miaou/types'
 const client = new v1.FirestoreAdminClient()
 
 export type BackupMigration = {
-  folderName?: string
-  expirationIn?: Day
+    folderName?: string
+    expirationIn?: Day
+    dryRun?: boolean
 }
 
 export type BackupScheduler = {
@@ -13,19 +14,20 @@ export type BackupScheduler = {
 }
 
 export type BackupBucketFile = {
-  metadata: { timeCreated: string },
-  name: string,
-  delete: () => Promise<any>
+    metadata: { timeCreated: string },
+    name: string,
+    delete: () => Promise<any>
 }
 
 export type BackupBucket = {
-  name: string
-  getFiles: () => Promise<[BackupBucketFile[], any, any]>
+    name: string
+    getFiles: () => Promise<[BackupBucketFile[], any, any]>
 }
 
 export const backup = (pubsub: BackupScheduler, bucket: BackupBucket) =>
-  ({ folderName = 'backup', expirationIn = 7 }: BackupMigration = {}) => pubsub
+  ({ folderName = 'backup', expirationIn = 7, dryRun = false }: BackupMigration = {}) => pubsub
     .onRun(async () => {
+      if (dryRun) return
       const date = new Date()
       const bucketPath = `gs://${bucket.name}/${folderName}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getUTCDate()}`
       const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT
