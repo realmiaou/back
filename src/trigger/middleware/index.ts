@@ -8,10 +8,7 @@ export * from './sentry'
 
 export const typedOnWriteTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
-  <T>(
-      path: string,
-      fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void
-    ) =>
+  <T>(path: string) => (fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void) =>
       trigger
         .document(path)
         .onWrite(
@@ -22,10 +19,7 @@ export const typedOnWriteTriggerWithMiddlewares = (trigger: FunctionBuilder['fir
 
 export const typedOnUpdateTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
-  <T>(
-      path: string,
-      fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void
-    ) =>
+  <T>(path: string) => (fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void) =>
       trigger
         .document(path)
         .onUpdate(
@@ -36,10 +30,7 @@ export const typedOnUpdateTriggerWithMiddlewares = (trigger: FunctionBuilder['fi
 
 export const typedOnDeleteTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
-        <T>(
-      path: string,
-      fn: (data: DocumentSnapshot<T>, userId: UserId) => void
-    ) =>
+        <T>(path: string) => (fn: (data: DocumentSnapshot<T>, userId: UserId) => void) =>
       trigger
         .document(path)
         .onDelete(
@@ -48,18 +39,14 @@ export const typedOnDeleteTriggerWithMiddlewares = (trigger: FunctionBuilder['fi
           )
         )
 export const typedOnCreateTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
-  (middlewares: Middleware[]) =>
-        <T>(
-      path: string,
-      fn: (data: DocumentSnapshot<T>, userId: UserId) => void
-    ) =>
-      trigger
-        .document(path)
-        .onCreate(
-          withOnCallMiddlewares(middlewares, data =>
-            fn(data as DocumentSnapshot<T>, 'system')
-          )
+  (middlewares: Middleware[]) => <T>(path: string) => (fn: (data: DocumentSnapshot<T>, userId: UserId) => void) =>
+    trigger
+      .document(path)
+      .onCreate(
+        withOnCallMiddlewares(middlewares, data =>
+          fn(data as DocumentSnapshot<T>, 'system')
         )
+      )
 
 const withOnCallMiddlewares =
     (middlewares: Middleware[], handler: Next): Next =>
