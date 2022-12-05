@@ -60,7 +60,6 @@ export const myBackup = backup(
     storage.bucket(),
     {folderName: 'backup', expirationIn: 2 as Day, dryRun: process.env.ENVIRONMENT !== 'production'})
 ```
-```
 
 #### Usage for restore
 

@@ -2,7 +2,7 @@ import {
   DocumentData,
   FirestoreDataConverter,
   QueryDocumentSnapshot
-} from 'firebase-admin/lib/firestore'
+} from 'firebase-admin/firestore'
 
 export const genericDataConverter = <
     Type extends DocumentData

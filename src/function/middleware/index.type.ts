@@ -1,7 +1,7 @@
-import { CallableContext } from 'firebase-functions/lib/common/providers/https'
+import { https } from 'firebase-functions'
 import { Parameter } from '@miaou/types'
 
-export type Next<T> = (data: T, context: CallableContext) => any | Promise<any>
+export type Next<T> = (data: T, context: https.CallableContext) => any | Promise<any>
 
 export type Middleware<DATA> = (
   data: Parameter<Next<DATA>>,

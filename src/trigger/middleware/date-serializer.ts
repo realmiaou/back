@@ -1,4 +1,4 @@
-import { DocumentSnapshot } from 'firebase-admin/lib/firestore'
+import { DocumentSnapshot } from 'firebase-admin/firestore'
 import { match, P } from 'ts-pattern'
 import { Middleware } from './index.type'
 

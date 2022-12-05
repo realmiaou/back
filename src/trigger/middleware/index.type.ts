@@ -1,5 +1,5 @@
 import { Change, EventContext } from 'firebase-functions'
-import { DocumentSnapshot } from 'firebase-admin/lib/firestore'
+import { DocumentSnapshot } from 'firebase-admin/firestore'
 import { Parameter } from '@miaou/types'
 
 export type Next = (
