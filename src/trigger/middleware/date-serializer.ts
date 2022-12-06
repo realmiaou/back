@@ -6,10 +6,10 @@ export const dateSerializer: Middleware = async (data, context, next) => {
   const innerData = match(data)
     .with({ before: P._, after: P._ }, ({ before, after }) => ({
       ...data,
-      after: overrideData(after),
-      before: overrideData(before)
+      after: serializeSnapshotDate(after),
+      before: serializeSnapshotDate(before)
     }))
-    .with(P._, data => data)
+    .with(P._, data => serializeSnapshotDate(data as DocumentSnapshot))
     .exhaustive()
   return await next(
     innerData,
@@ -17,7 +17,7 @@ export const dateSerializer: Middleware = async (data, context, next) => {
   )
 }
 
-const overrideData = (doc: DocumentSnapshot): DocumentSnapshot => {
+const serializeSnapshotDate = (doc: DocumentSnapshot): DocumentSnapshot => {
   const dataToParse = doc.data()
   doc.data = () => toDate(dataToParse)
   return doc
