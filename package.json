@@ -47,7 +47,7 @@
     "@google-cloud/firestore": "6.4.0",
     "fast-glob": "3.2.12",
     "lodash.flattendeep": "4.4.0",
-    "moment": "2.29.4",
+    "dayjs": "1.11.6",
     "ts-pattern": "4.0.5"
   }
 }

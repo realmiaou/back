@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { Middleware } from './index.type'
 
 export const dateSerializer: Middleware<any> = async (data, context, next) =>
@@ -28,8 +28,8 @@ const deserializeDate = <T>(obj: any): any => {
   if (!(obj instanceof Object)) return obj
   return Object.keys(obj).reduce((acc: { [key: string]: any }, key) => {
     const value = obj[key]
-    acc[key] = isISODate.test(value) && moment(value).isValid()
-      ? moment(value).toDate()
+    acc[key] = isISODate.test(value) && dayjs(value).isValid()
+      ? dayjs(value).toDate()
       : value instanceof Object
         ? deserializeDate(value)
         : value
