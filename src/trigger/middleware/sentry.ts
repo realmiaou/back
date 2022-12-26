@@ -1,9 +1,11 @@
 import flattenDeep from 'lodash/flattenDeep'
 import { logger } from 'firebase-functions'
-import { Client, Hub } from '@sentry/types'
+import Sentry from '@sentry/node'
 import { Middleware } from './index.type'
 
-export const sentry = (sentry: Hub & Client) : Middleware => async (data, context, next) => {
+export type SentryInstance = typeof Sentry
+
+export const sentry = (sentry: SentryInstance) : Middleware => async (data, context, next) => {
   sentry.setUser({ id: 'system' })
   const transaction = sentry.startTransaction({
     name: process.env.FUNCTION_TARGET!,
