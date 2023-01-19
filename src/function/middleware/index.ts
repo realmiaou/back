@@ -9,19 +9,19 @@ export * from './date-serializer'
 export * from './sentry'
 
 export const typedOnCallWithMiddlewares = (https: FunctionBuilder['https']) =>
-  <T extends (...args: any) => any>(
+  <T extends (...args: any) => any, CONTEXT = https.CallableContext>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>
     (
       fn: (
       data: Parameter<T>,
       userId: UserId,
-      context: https.CallableContext
+      context: CONTEXT
     ) => ReturnType<T>
     ) =>
       https.onCall(
         withOnCallMiddlewares(middlewares, (data, context) =>
-          fn(data, (context.auth?.uid ?? 'guest') as UserId, context)
+          fn(data, (context.auth?.uid ?? 'guest') as UserId, context as CONTEXT)
         )
       )
 
