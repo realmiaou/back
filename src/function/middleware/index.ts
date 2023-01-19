@@ -1,5 +1,5 @@
 import { Parameter, UserId } from '@miaou/types'
-import { FunctionBuilder } from 'firebase-functions'
+import { FunctionBuilder, https } from 'firebase-functions'
 import { Middleware, Next } from './index.type'
 
 export * from './admin'
@@ -15,12 +15,13 @@ export const typedOnCallWithMiddlewares = (https: FunctionBuilder['https']) =>
     (
       fn: (
       data: Parameter<T>,
-      userId: UserId
-    ) => ReturnType<T> | Promise<ReturnType<T>>
+      userId: UserId,
+      context: https.CallableContext
+    ) => ReturnType<T>
     ) =>
       https.onCall(
-        withOnCallMiddlewares(middlewares, (data, { auth }) =>
-          fn(data, (auth?.uid ?? 'guest') as UserId)
+        withOnCallMiddlewares(middlewares, (data, context) =>
+          fn(data, (context.auth?.uid ?? 'guest') as UserId, context)
         )
       )
 
