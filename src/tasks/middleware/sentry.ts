@@ -9,7 +9,7 @@ export const sentry = (sentry: SentryInstance) : Middleware => async (data, cont
   sentry.setUser({ id: 'system' })
   const transaction = sentry.startTransaction({
     name: process.env.FUNCTION_TARGET!,
-    op: 'firebase.function.pubsub',
+    op: 'firebase.function.taskQueue',
     data: { ...flattenDeep([context]), uid: 'system' }
   })
   sentry.configureScope((scope) => {
