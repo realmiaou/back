@@ -29,7 +29,10 @@ const toDate = <T>(obj: any): any => {
   if (!(obj instanceof Object)) return obj
   return Object.keys(obj).reduce((acc: { [key: string]: any }, key) => {
     const value = obj[key]
-    acc[key] = value?.toDate ? value.toDate() : value
+    if (Array.isArray(value))
+      acc[key] = value.map(toDate)
+    else
+      acc[key] = value?.toDate ? value.toDate() : value
     return acc
   }, {}) as T
 }

@@ -28,11 +28,14 @@ const deserializeDate = <T>(obj: any): any => {
   if (!(obj instanceof Object)) return obj
   return Object.keys(obj).reduce((acc: { [key: string]: any }, key) => {
     const value = obj[key]
-    acc[key] = isISODate.test(value) && dayjs(value).isValid()
-      ? dayjs(value).toDate()
-      : value instanceof Object
-        ? deserializeDate(value)
-        : value
+    if (Array.isArray(value))
+      acc[key] = value.map(deserializeDate)
+    else
+      acc[key] = isISODate.test(value)
+        ? dayjs(value).toDate()
+        : value instanceof Object
+          ? deserializeDate(value)
+          : value
     return acc
   }, {}) as T
 }
