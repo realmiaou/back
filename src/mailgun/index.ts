@@ -14,10 +14,13 @@ export type MailGunConfiguration = {
     mailgunApiUrl: string
 }
 export type MailTemplate = { html: string, name: string, description: string }
+
 export const publishMailgunTemplate = (https: FunctionBuilder, { srcFolderPath = process.cwd(), mailgunDomainUrl, mailgunApiUrl, mailgunApiKey }: MailGunConfiguration) =>
   https.runWith({ timeoutSeconds: 540 })
     .https.onRequest(async (_, resp) => {
-      const files = await fg([path.join(srcFolderPath, '**/*.mjml')], { dot: true })
+      console.log(`mailgun: src path: ${srcFolderPath}`)
+      const files = await fg(path.join(srcFolderPath, '**/*.mjml'))
+      console.log(`mailgun: Found ${files.length} files`)
       const mailgunTemplates = files.map<MailTemplate>(file => ({
         name: path.basename(file).replace('.mjml', ''),
         description: 'Autmatic deployement',
