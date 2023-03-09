@@ -23,7 +23,7 @@ export const publishMailgunTemplate = (https: FunctionBuilder, { srcFolderPath =
       console.log(`mailgun: Found ${files.length} files`)
       const mailgunTemplates = files.map<MailTemplate>(file => ({
         name: path.basename(file).replace('.mjml', ''),
-        description: 'Autmatic deployement',
+        description: 'Automatic deployment',
         html: mjml2html(fs.readFileSync(file).toString()).html
       }))
       const mailgun = new Mailgun(formData)
@@ -38,10 +38,19 @@ export const publishMailgunTemplate = (https: FunctionBuilder, { srcFolderPath =
 
 const publishTemplate = (client: Client, mailgunDomainUrl: string) => async ({ name, description, html }: MailTemplate) => {
   console.log(`mailgun: publishing ${name} to mailgun API`)
-  await client.domains.domainTemplates.destroy(mailgunDomainUrl, name)
-  await client.domains.domainTemplates.create(mailgunDomainUrl, {
-    name,
-    description,
-    template: html
-  })
+  try {
+    await client.domains.domainTemplates.destroy(mailgunDomainUrl, name)
+  } catch (e) {
+    console.log(`mailgun: cannot delete template ${name}`)
+  }
+
+  try {
+    await client.domains.domainTemplates.create(mailgunDomainUrl, {
+      name,
+      description,
+      template: html
+    })
+  } catch (e) {
+    console.log(`mailgun: error publishing template ${name}`)
+  }
 }
