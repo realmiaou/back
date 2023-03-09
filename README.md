@@ -10,6 +10,50 @@ yarn add --exact @miaou/back
 
 ## Documentation
 
+### Mailgun
+
+#### Requirements
+
+- `yarn add --dev --exact copyfiles`
+- `yarn add --exact mailgun-js`
+- mjml plugin for intelliJ
+- Mailgun account with API key
+
+#### Create system function
+
+```typescript
+import * as path from 'path'
+import { publishMailgunTemplate } from '@miaou/back/lib/mailgun'
+import { region } from 'firebase-functions'
+
+export const publishTemplate = publishMailgunTemplate(region('europe-west1'), {
+    mailgunApiKey: MAILGUN_API_KEY,
+    mailgunApiUrl: MAILGUN_API_URL,
+    mailgunDomainUrl: MAILGUN_DOMAIN_URL,
+    srcFolderPath: path.join(__dirname, '..'),
+})
+```
+
+#### Add script into `package.json`
+
+Add `yarn copyfiles -u 1 src/**/*.mjml lib/` before to build to push your mjml files to your build folder
+
+````json
+// package.json
+{
+  "scripts": {
+    "build": "yarn copyfiles -u 1 src/**/*.mjml lib/ && tsc",
+    ...
+  },
+  ...
+}
+````
+
+#### Create your template.mjml 
+
+Create your mjml file anywhere into `src` folder, the call the function to publish the mjml to mailgun.
+Don't forget to call it a the end of your CI/CD pipeline
+
 ### Firestore
 
 #### Backup for firestore

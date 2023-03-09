@@ -32,11 +32,12 @@ export const publishMailgunTemplate = (https: FunctionBuilder, { srcFolderPath =
         key: mailgunApiKey,
         url: mailgunApiUrl
       })
-      await Promise.all(mailgunTemplates.map(publishTemplate(client, mailgunDomainUrl)))
+      await Promise.all(mailgunTemplates.map(template => publishTemplate(client, mailgunDomainUrl)(template)))
       resp.send('OK')
     })
 
 const publishTemplate = (client: Client, mailgunDomainUrl: string) => async ({ name, description, html }: MailTemplate) => {
+  console.log(`mailgun: publishing ${name} to mailgun API`)
   await client.domains.domainTemplates.destroy(mailgunDomainUrl, name)
   await client.domains.domainTemplates.create(mailgunDomainUrl, {
     name,
