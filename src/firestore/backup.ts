@@ -24,7 +24,7 @@ export type BackupBucket = {
     getFiles: () => Promise<[BackupBucketFile[], any, any]>
 }
 
-export const backup = (pubsub: BackupScheduler, bucket: BackupBucket, { folderName = 'backup', expirationIn = 7, dryRun = false }: BackupMigration = {}) =>
+export const backup = (pubsub: BackupScheduler, bucket: BackupBucket, { folderName = 'backup', expirationIn = 7 as Day, dryRun = false }: BackupMigration = {}) =>
   pubsub
     .onRun(async () => {
       if (dryRun) return

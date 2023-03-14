@@ -10,49 +10,88 @@ yarn add --exact @miaou/back
 
 ## Documentation
 
-### Mailgun
+### Mail
+
+Generate Email using mjml and handlebars
 
 #### Requirements
 
 - `yarn add --dev --exact copyfiles`
-- `yarn add --exact mailgun-js`
 - mjml plugin for intelliJ
-- Mailgun account with API key
 
-#### Create system function
+#### How to
+
+#### Files structure
+Files must be in `src` folder and must be named with the following pattern `{template_name}.{mjml|i18n.yml}`
+
+```
+    ├── src
+    │   ├── user
+    │   │   ├── signin.mjml
+    │   │   └── signin.i18n.yml
+```
+#### Create your `signin.i18n.yml`
+
+```yaml
+en:
+  subject: Welcome {{email}}!
+  subtitle: GETTING STARTED
+  title: Let's get you up and running smoothly
+fr:
+  subject: Bienvenue  {{email}}!
+  subtitle: DÉMARRAGE
+  title: Laissez-nous vous mettre en route en douceur
+```
+
+#### Create your `signin.mjml`
+
+```mjml
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="'Cabin', 'Helvetica', 'Arial', sans-serif"></mj-all>
+      <mj-text color="#515151"></mj-text>
+    </mj-attributes>
+    <mj-font href="https://fonts.googleapis.com/css?family=Cabin:normal,italic,bold&display=swap" name="Cabin"></mj-font>
+  </mj-head>
+  <mj-body background-color="#f8f8f8">
+    <mj-section background-color="#292D4D" padding-bottom="48px" padding-left="48px" padding-right="48px" padding-top="24px" padding="48px">
+      <mj-column padding="0">
+        <mj-text color="rgba(255,255,255,0.5)" font-size="14px" line-height="1.6" padding="0px">
+          {{$t "subtitle"}}
+        </mj-text>
+        <mj-text color="#ffffff" font-size="38px" line-height="1.375" padding="0px">
+          <strong>{{$t "title"}}</strong>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
+```
 
 ```typescript
-import * as path from 'path'
-import { publishMailgunTemplate } from '@miaou/back/lib/mailgun'
-import { region } from 'firebase-functions'
-
-export const publishTemplate = publishMailgunTemplate(region('europe-west1'), {
-    mailgunApiKey: MAILGUN_API_KEY,
-    mailgunApiUrl: MAILGUN_API_URL,
-    mailgunDomainUrl: MAILGUN_DOMAIN_URL,
-    srcFolderPath: path.join(__dirname, '..'),
+const { html, subject } = await generateMail({
+    srcPath: path.join(__dirname, '..'),
+    locale,
+    templateFileName: template,
+    variables,
 })
 ```
 
 #### Add script into `package.json`
 
-Add `yarn copyfiles -u 1 src/**/*.mjml lib/` before to build to push your mjml files to your build folder
+Add `yarn copyfiles -u 1 src/**/*.mjml src/**/*.i18n.yml lib/` before to build to push your mjml files to your build folder
 
 ````json
 // package.json
 {
   "scripts": {
-    "build": "yarn copyfiles -u 1 src/**/*.mjml lib/ && tsc",
+    "build": "yarn copyfiles -u 1 src/**/*.mjml src/**/*.i18n.yml lib/ && tsc",
     ...
   },
   ...
 }
 ````
-
-#### Create your template.mjml 
-
-Create your mjml file anywhere into `src` folder, the call the function to publish the mjml to mailgun.
-Don't forget to call it a the end of your CI/CD pipeline
 
 ### Firestore
 

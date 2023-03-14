@@ -49,9 +49,12 @@
     "@google-cloud/firestore": "6.4.0",
     "dayjs": "1.11.6",
     "fast-glob": "3.2.12",
+    "handlebars": "4.7.7",
     "lodash.flattendeep": "4.4.0",
     "mjml": "4.13.0",
-    "ts-pattern": "4.0.5"
+    "ts-brand": "0.0.2",
+    "ts-pattern": "4.0.5",
+    "yaml": "2.2.1"
   },
   "peerDependencies": {
     "mailgun.js": "^8.2.1"
