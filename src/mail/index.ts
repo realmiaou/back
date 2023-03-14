@@ -19,7 +19,7 @@ export const generateMail = async ({ templateFileName, locale = 'en', variables,
   const [textPath] = await fg(path.join(srcPath, `**/${templateFileName}.txt`))
   const text = toText(textPath, variables)
 
-  return { html: html ?? text ?? '', subject: subject ?? '', text: text ?? '' } as GeneratedMail
+  return { html, subject: subject ?? '', text: text ?? '' } as GeneratedMail
 }
 
 const initI18n = (i18nPath: string | undefined, locale: LanguageIso, variables = {}) => {
