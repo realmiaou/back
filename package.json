@@ -55,8 +55,5 @@
     "ts-brand": "0.0.2",
     "ts-pattern": "4.0.5",
     "yaml": "2.2.1"
-  },
-  "peerDependencies": {
-    "mailgun.js": "^8.2.1"
   }
 }

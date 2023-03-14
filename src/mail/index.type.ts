@@ -10,5 +10,6 @@ export type MailToGenerate = {
 
 export type GeneratedMail = {
     html: string,
+    text: string,
     subject: string,
 }
