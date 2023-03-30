@@ -1,5 +1,6 @@
 import { Parameter, UserId } from '@miaou/types'
 import { FunctionBuilder, https } from 'firebase-functions'
+import { RuntimeOptions } from 'firebase-functions/lib/function-configuration'
 import { Middleware, Next } from './index.type'
 
 export * from './admin'
@@ -8,7 +9,7 @@ export * from './authenticated'
 export * from './date-serializer'
 export * from './sentry'
 
-export const typedOnCallWithMiddlewares = (https: FunctionBuilder['https']) =>
+export const typedOnCallWithMiddlewares = (functionBuilder: FunctionBuilder) =>
   <T extends (...args: any) => any, CONTEXT = https.CallableContext>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>
@@ -17,9 +18,10 @@ export const typedOnCallWithMiddlewares = (https: FunctionBuilder['https']) =>
       data: Parameter<T>,
       userId: UserId,
       context: CONTEXT
-    ) => ReturnType<T>
+    ) => ReturnType<T>,
+      runtimeOptions = {} as RuntimeOptions
     ) =>
-      https.onCall(
+      functionBuilder.runWith(runtimeOptions).https.onCall(
         withOnCallMiddlewares(middlewares, (data, context) =>
           fn(data, (context.auth?.uid ?? 'guest') as UserId, context as CONTEXT)
         )
