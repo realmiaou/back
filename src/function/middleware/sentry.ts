@@ -1,5 +1,5 @@
 import Sentry from '@sentry/node'
-import { flatten } from '@corex/flatten'
+import { flatten } from 'flat'
 import { Middleware } from './index.type'
 
 export type SentryInstance = typeof Sentry
