@@ -5,6 +5,7 @@ import mjml2html from 'mjml'
 import yaml from 'yaml'
 import handlebars from 'handlebars'
 import { LanguageIso } from '@miaou/types'
+import get from 'lodash/get'
 import { GeneratedMail, MailToGenerate } from './index.type'
 
 export const generateMail = async ({ templateFileName, locale = 'en', variables, srcPath }: MailToGenerate) => {
@@ -27,7 +28,7 @@ const initI18n = (i18nPath: string | undefined, locale: LanguageIso, variables =
   const i18nToCompile = fs.readFileSync(i18nPath).toString()
   const templateI18n = yaml.parse(i18nToCompile)
   handlebars.registerHelper('$t', key =>
-    handlebars.compile(templateI18n[locale][key] ?? '')(variables)
+    handlebars.compile(get(templateI18n, `${locale}.${key}`) ?? '')(variables)
   )
 }
 
