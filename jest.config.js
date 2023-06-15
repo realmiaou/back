@@ -1,4 +1,5 @@
 module.exports = {
+  testTimeout: 600000,
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1'

@@ -1,3 +1,4 @@
+export * as functionsV2 from './function-v2'
 export * as functions from './function'
 export * as trigger from './trigger'
 export * as firestore from './firestore'
