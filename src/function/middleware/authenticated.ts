@@ -1,6 +1,6 @@
 import { Middleware } from './index.type'
 
-export const authenticated: Middleware<any> = (data, context, next) => {
+export const authenticated: Middleware<any> = (context, next) => {
   if (!context.auth) throw new Error('No authenticated user')
-  return next(data, context)
+  return next(context)
 }

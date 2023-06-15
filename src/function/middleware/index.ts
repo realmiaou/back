@@ -1,6 +1,9 @@
 import { Parameter, UserId } from '@miaou/types'
-import { FunctionBuilder, https } from 'firebase-functions'
-import { RuntimeOptions } from 'firebase-functions/lib/function-configuration'
+import {
+  CallableRequest,
+  HttpsOptions,
+  onCall
+} from 'firebase-functions/v2/https'
 import { Middleware, Next } from './index.type'
 
 export * from './admin'
@@ -9,8 +12,8 @@ export * from './authenticated'
 export * from './date-serializer'
 export * from './sentry'
 
-export const typedOnCallWithMiddlewares = (functionBuilder: FunctionBuilder) =>
-  <T extends (...args: any) => any, CONTEXT = https.CallableContext>(
+export const typedOnCallWithMiddlewares = (onCallInstance: typeof onCall, defaultOptions = {} as HttpsOptions) =>
+  <T extends (...args: any) => any, CONTEXT = CallableRequest>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>
     (
@@ -19,24 +22,25 @@ export const typedOnCallWithMiddlewares = (functionBuilder: FunctionBuilder) =>
       userId: UserId,
       context: CONTEXT
     ) => ReturnType<T>,
-      runtimeOptions = {} as RuntimeOptions
+      options = defaultOptions as HttpsOptions
     ) =>
-      functionBuilder.runWith(runtimeOptions).https.onCall(
-        withOnCallMiddlewares(middlewares, (data, context) =>
-          fn(data, (context.auth?.uid ?? 'guest') as UserId, context as CONTEXT)
+      onCallInstance(
+        { ...defaultOptions, ...options },
+        withOnCallMiddlewares(middlewares, context =>
+          fn(context.data, (context.auth?.uid ?? 'guest') as UserId, context as CONTEXT)
         )
       )
 
 const withOnCallMiddlewares =
     <T>(middlewares: Middleware<T>[], handler: Next<T>): Next<T> =>
-    (data, context) => {
+    (context) => {
       const chainMiddlewares = ([
         firstMiddleware,
         ...restOfMiddlewares
       ]: Middleware<T>[]): Next<T> =>
         firstMiddleware
-          ? (data, context): ReturnType<Next<T>> =>
-              firstMiddleware(data, context, chainMiddlewares(restOfMiddlewares))
+          ? (context): ReturnType<Next<T>> =>
+              firstMiddleware(context, chainMiddlewares(restOfMiddlewares))
           : handler
-      return chainMiddlewares(middlewares)(data, context)
+      return chainMiddlewares(middlewares)(context)
     }

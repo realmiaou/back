@@ -1,6 +1,6 @@
 {
   "name": "@miaou/back",
-  "version": "3.6.6",
+  "version": "4.0.1",
   "author": "Thibaut Mottet",
   "description": "Back utilities for Firebase",
   "license": "MIT",
@@ -49,16 +49,16 @@
     "typescript": "4.8.4"
   },
   "dependencies": {
-    "@google-cloud/firestore": "6.4.0",
-    "dayjs": "1.11.6",
+    "@google-cloud/firestore": "6.6.0",
+    "dayjs": "1.11.7",
     "fast-glob": "3.2.12",
     "flat": "5.0.2",
     "handlebars": "4.7.7",
     "lodash.flattendeep": "^4.4.0",
     "lodash.get": "^4.4.0",
-    "mjml": "4.13.0",
+    "mjml": "4.14.1",
     "ts-brand": "0.0.2",
-    "ts-pattern": "4.0.5",
-    "yaml": "2.2.1"
+    "ts-pattern": "4.3.0",
+    "yaml": "2.3.1"
   }
 }
