@@ -1,4 +1,4 @@
-export * as firestore from './firestore'
+export * from './firestore'
 export * as functions from './function'
 export * as functionsV2 from './function-v2'
 export * as mail from './mail'
