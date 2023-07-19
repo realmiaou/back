@@ -1,6 +1,5 @@
 node_modules/
-lib/
-.idea/
+dist/
 **/*.log
 .npm/
 package-lock.json
