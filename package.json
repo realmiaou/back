@@ -1,6 +1,6 @@
 {
   "name": "@miaou/back",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "author": "Thibaut Mottet",
   "description": "Back utilities for Firebase",
   "license": "MIT",
