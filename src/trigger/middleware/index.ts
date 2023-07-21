@@ -6,7 +6,7 @@ import { Middleware, Next } from './index.type'
 export * from './date-serializer'
 export * from './sentry'
 
-export const triggerWrapper = (trigger: FunctionBuilder['firestore']) =>
+export const onWriteTriggerWrapper = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
   <T>(path: string) => (fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void) =>
       trigger
@@ -17,7 +17,7 @@ export const triggerWrapper = (trigger: FunctionBuilder['firestore']) =>
           )
         )
 
-export const typedOnUpdateTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
+export const onUpdateTriggerWrapper = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
   <T>(path: string) => (fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void) =>
       trigger
@@ -28,7 +28,7 @@ export const typedOnUpdateTriggerWithMiddlewares = (trigger: FunctionBuilder['fi
           )
         )
 
-export const typedOnDeleteTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
+export const onDeleteTriggerWrapper = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
         <T>(path: string) => (fn: (data: DocumentSnapshot<T>, userId: UserId) => void) =>
       trigger
@@ -38,7 +38,7 @@ export const typedOnDeleteTriggerWithMiddlewares = (trigger: FunctionBuilder['fi
             fn(data as DocumentSnapshot<T>, 'system')
           )
         )
-export const typedOnCreateTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
+export const onCreateTriggerWrapper = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) => <T>(path: string) => (fn: (data: DocumentSnapshot<T>, userId: UserId) => void) =>
     trigger
       .document(path)
