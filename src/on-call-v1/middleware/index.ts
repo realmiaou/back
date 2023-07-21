@@ -9,7 +9,7 @@ export * from './authenticated'
 export * from './date-serializer'
 export * from './sentry'
 
-export const onCallV1 = (functionBuilder: FunctionBuilder) =>
+export const onCallV1Wrapper = (functionBuilder: FunctionBuilder) =>
   <T extends (...args: any) => any, CONTEXT = https.CallableContext>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>

@@ -8,7 +8,7 @@ export * from './authenticated'
 export * from './date-serializer'
 export * from './sentry'
 
-export const onCallV2 = (onCallInstance: typeof onCall, defaultOptions = {} as HttpsOptions) =>
+export const onCallV2Wrapper = (onCallInstance: typeof onCall, defaultOptions = {} as HttpsOptions) =>
   <T extends (...args: any) => any, CONTEXT = CallableRequest>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>
