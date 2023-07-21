@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Middleware } from './index.type'
 
-export const dateSerializer: Middleware<any> = async (data, context, next) =>
+export const onCallV1DateSerializer: Middleware<any> = async (data, context, next) =>
   serializeDate(await next(deserializeDate(data), context))
 
 const serializeDate = <T>(obj: any): any => {

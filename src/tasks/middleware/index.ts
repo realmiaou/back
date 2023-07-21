@@ -4,7 +4,7 @@ import { Middleware, Next } from './index.type'
 
 export * from './sentry'
 
-export const typedOnDispatchTasksWithMiddlewares = (tasks: FunctionBuilder['tasks']) =>
+export const task = (tasks: FunctionBuilder['tasks']) =>
   (middlewares: Middleware[]) => <T>() => (fn: (data: T, context: TaskContext) => PromiseLike<any> | any) =>
     tasks.taskQueue().onDispatch(
       withOnCallMiddlewares(middlewares, (data, context) =>

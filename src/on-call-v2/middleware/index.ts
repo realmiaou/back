@@ -1,9 +1,5 @@
 import { Parameter, UserId } from '@miaou/types'
-import {
-  CallableRequest,
-  HttpsOptions,
-  onCall
-} from 'firebase-functions/v2/https'
+import { CallableRequest, HttpsOptions, onCall } from 'firebase-functions/v2/https'
 import { Middleware, Next } from './index.type'
 
 export * from './admin'
@@ -12,7 +8,7 @@ export * from './authenticated'
 export * from './date-serializer'
 export * from './sentry'
 
-export const typedOnCallWithMiddlewares = (onCallInstance: typeof onCall, defaultOptions = {} as HttpsOptions) =>
+export const onCallV2 = (onCallInstance: typeof onCall, defaultOptions = {} as HttpsOptions) =>
   <T extends (...args: any) => any, CONTEXT = CallableRequest>(
     middlewares: Middleware<Parameter<T>>[]
   ) =>

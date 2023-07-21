@@ -3,7 +3,7 @@ import { Middleware, Next, Request, Response } from './index.type'
 
 export * from './sentry'
 
-export const typedOnCallWithMiddlewares = (https: FunctionBuilder['https']) =>
+export const onRequest = (https: FunctionBuilder['https']) =>
   (middlewares: Middleware[]) =>
     (fn: (request:Request, response: Response) => void | Promise<void>) =>
       https.onRequest(withOnCallMiddlewares(middlewares, fn))

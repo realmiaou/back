@@ -1,7 +1,7 @@
 import { UserId } from '@miaou/types'
 import { Middleware } from './index.type'
 
-export const admin = (isUserAdmin: (id: UserId) => Promise<boolean>) : Middleware<any> => async (data, context, next) => {
+export const onCallV1Admin = (isUserAdmin: (id: UserId) => Promise<boolean>) : Middleware<any> => async (data, context, next) => {
   if (!context.auth) throw new Error('No authenticated user')
   const { uid } = context.auth
   const isAdmin = await isUserAdmin(uid as UserId)

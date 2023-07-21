@@ -2,7 +2,7 @@ import { DocumentSnapshot } from 'firebase-admin/firestore'
 import { match, P } from 'ts-pattern'
 import { Middleware } from './index.type'
 
-export const dateSerializer: Middleware = async (data, context, next) => {
+export const triggerDateSerializer: Middleware = async (data, context, next) => {
   const innerData = match(data)
     .with({ before: P._, after: P._ }, ({ before, after }) => ({
       ...data,

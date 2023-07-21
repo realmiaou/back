@@ -6,7 +6,7 @@ import { Middleware, Next } from './index.type'
 export * from './date-serializer'
 export * from './sentry'
 
-export const typedOnWriteTriggerWithMiddlewares = (trigger: FunctionBuilder['firestore']) =>
+export const trigger = (trigger: FunctionBuilder['firestore']) =>
   (middlewares: Middleware[]) =>
   <T>(path: string) => (fn: (data: Change<DocumentSnapshot<T>>, userId: UserId) => void) =>
       trigger

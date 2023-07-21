@@ -4,7 +4,7 @@ import { Middleware, Next } from './index.type'
 
 export * from './sentry'
 
-export const typedOnPublishPubsubWithMiddlewares = (pubsub: FunctionBuilder['pubsub']) =>
+export const scheduler = (pubsub: FunctionBuilder['pubsub']) =>
   (middlewares: Middleware[]) => (schedule: string, timezone = 'Europe/Paris') => (fn: (context: EventContext) => PromiseLike<any> | any) =>
     pubsub.schedule(schedule).timeZone(timezone).onRun(
       withOnCallMiddlewares(middlewares, context =>

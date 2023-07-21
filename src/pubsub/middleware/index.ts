@@ -4,7 +4,7 @@ import { Middleware, Next } from './index.type'
 
 export * from './sentry'
 
-export const typedOnPublishPubsubWithMiddlewares = (pubsub: FunctionBuilder['pubsub']) =>
+export const pubsub = (pubsub: FunctionBuilder['pubsub']) =>
   (middlewares: Middleware[]) => <T>(topic: string) => (fn: (message: T, context: EventContext) => PromiseLike<any> | any) =>
     pubsub.topic(topic).onPublish(
       withOnCallMiddlewares(middlewares, (message, context) =>
