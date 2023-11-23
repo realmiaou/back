@@ -1,6 +1,7 @@
 import path from 'path'
 import { FunctionBuilder } from 'firebase-functions'
 import { Firestore } from 'firebase-admin/firestore'
+import { onRequest } from 'firebase-functions/v2/https'
 import fg from 'fast-glob'
 
 export type MigrationConfiguration = {
@@ -11,10 +12,21 @@ export type MigrationScript = {
     version: number
 }
 
+export const migrateFirestoreV2 = (https: typeof onRequest, database: Firestore, { migrationFolderPath = process.cwd() }: MigrationConfiguration) =>
+  https({ timeoutSeconds: 540 }, async (_, resp) => {
+    const files = await fg([path.join(migrationFolderPath!, '**/*.migration.js')], { dot: true })
+    const instances: MigrationScript[] = await Promise.all(files.map(async file => ({
+      version: parseInt(path.basename(file).match(/(?<=v)(.*?)(?=-)/)![0]),
+      migrate: (await import(file)).migrate
+    })))
+    await migrate(database)(instances)
+    resp.send('OK')
+  })
+
 export const migrateFirestore = (https: FunctionBuilder, database: Firestore, { migrationFolderPath = process.cwd() }: MigrationConfiguration) =>
   https.runWith({ timeoutSeconds: 540 })
     .https.onRequest(async (_, resp) => {
-      const files = await fg([path.join(migrationFolderPath, '**/*.migration.js')], { dot: true })
+      const files = await fg([path.join(migrationFolderPath!, '**/*.migration.js')], { dot: true })
       const instances: MigrationScript[] = await Promise.all(files.map(async file => ({
         version: parseInt(path.basename(file).match(/(?<=v)(.*?)(?=-)/)![0]),
         migrate: (await import(file)).migrate
